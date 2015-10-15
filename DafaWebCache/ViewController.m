@@ -7,21 +7,29 @@
 //
 
 #import "ViewController.h"
+#import "DFDownloadOperation.h"
 
 @interface ViewController ()
+
+@property(nonatomic, strong) NSLock *lock;
+@property(assign, atomic) NSUInteger num;
 
 @end
 
 @implementation ViewController
 
-- (void)viewDidLoad {
-  [super viewDidLoad];
-  // Do any additional setup after loading the view, typically from a nib.
+- (IBAction)onCacheURL:(id)sender {
+  NSString *url = @"http://segmentfault.com/a/1190000003862596";
+  DFDownloadOperation *operation = [[DFDownloadOperation alloc] initWithAddress:url
+                                                                     saveToPath:nil
+                                                                     completion:^(NSString *response, NSHTTPURLResponse *urlResponse, NSError *error)
+          {
+            NSLog(@"%@", response);
+          }];
+  [operation start];
 }
 
-- (void)didReceiveMemoryWarning {
-  [super didReceiveMemoryWarning];
-  // Dispose of any resources that can be recreated.
+- (IBAction)loadFromCache:(id)sender {
 }
 
 @end
