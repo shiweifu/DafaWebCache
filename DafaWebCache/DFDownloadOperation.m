@@ -47,10 +47,25 @@
 
   self.operationCompletionBlock = completionBlock;
 
+  executing = NO;
+  finished  = NO;
+
   return self;
 }
 
-- (void)main
+- (BOOL)isConcurrent {
+  return YES;
+}
+
+- (BOOL)isExecuting {
+  return executing;
+}
+
+- (BOOL)isFinished {
+  return finished;
+}
+
+- (void)start
 {
   if(self.userAgent)
   {
@@ -78,16 +93,18 @@
                                                              delegate:self
                                                      startImmediately:NO];
 
-  NSOperationQueue *currentQueue = [NSOperationQueue currentQueue];
-  BOOL inBackgroundAndInOperationQueue = (currentQueue != nil && currentQueue != [NSOperationQueue mainQueue]);
-  NSRunLoop *targetRunLoop = (inBackgroundAndInOperationQueue) ? [NSRunLoop currentRunLoop] : [NSRunLoop mainRunLoop];
+  //NSOperationQueue *currentQueue = [NSOperationQueue currentQueue];
+  //BOOL inBackgroundAndInOperationQueue = (currentQueue != nil && currentQueue != [NSOperationQueue mainQueue]);
+  //NSRunLoop *targetRunLoop = (inBackgroundAndInOperationQueue) ? [NSRunLoop currentRunLoop] : [NSRunLoop mainRunLoop];
 
-  if(self.savePath) // schedule on main run loop so scrolling doesn't prevent UI updates of the progress block
-    [self.operationConnection scheduleInRunLoop:targetRunLoop forMode:NSRunLoopCommonModes];
-  else
-    [self.operationConnection scheduleInRunLoop:targetRunLoop forMode:NSDefaultRunLoopMode];
-
+//  if(self.savePath) // schedule on main run loop so scrolling doesn't prevent UI updates of the progress block
+//    [self.operationConnection scheduleInRunLoop:targetRunLoop forMode:NSRunLoopCommonModes];
+//  else
+//    [self.operationConnection scheduleInRunLoop:targetRunLoop forMode:NSDefaultRunLoopMode];
+  [self willChangeValueForKey:@"isExecuting"];
   [self.operationConnection start];
+  executing = YES;
+  [self didChangeValueForKey:@"isExecuting"];
 
   self.state = DFDownloadOperationStateExecuting;
 }
@@ -174,6 +191,10 @@ didReceiveResponse:(NSURLResponse *)response
   self.operationConnection = nil;
 
   self.state = DFDownloadOperationStateFinished;
+
+  [self willChangeValueForKey:@"isFinished"];
+  finished = YES;
+  [self didChangeValueForKey:@"isFinished"];
 }
 
 @end

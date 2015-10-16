@@ -17,6 +17,10 @@ typedef void (^DFDownloadCompletionHandler)(NSString *response, NSHTTPURLRespons
 
 
 @interface DFDownloadOperation : NSOperation <NSURLConnectionDelegate, NSURLConnectionDataDelegate>
+{
+  BOOL executing;
+  BOOL finished;
+}
 
 @property (nonatomic, strong) NSString *userAgent;
 

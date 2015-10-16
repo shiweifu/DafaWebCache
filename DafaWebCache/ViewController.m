@@ -8,12 +8,14 @@
 
 #import "ViewController.h"
 #import "DFDownloadOperation.h"
+#import "TestOperation.h"
 
 @interface ViewController ()
 
 @property(nonatomic, strong) NSLock *lock;
 @property(assign, atomic) NSUInteger num;
 
+@property (nonatomic, strong) NSOperationQueue *queue;
 @end
 
 @implementation ViewController
@@ -26,7 +28,24 @@
           {
             NSLog(@"%@", response);
           }];
-  [operation start];
+//  [self.queue addOperation:operation];
+
+  TestOperation *to = [[TestOperation alloc] init];
+  [to setCompletionBlock:^
+  {
+    NSLog(@"run operation finish");
+  }];
+  [self.queue addOperation:to];
+
+}
+
+- (NSOperationQueue *)queue
+{
+  if(!_queue)
+  {
+    _queue = [[NSOperationQueue alloc] init];
+  }
+  return _queue;
 }
 
 - (IBAction)loadFromCache:(id)sender {
