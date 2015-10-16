@@ -13,7 +13,7 @@ enum {
 
 typedef NSUInteger DafaDownloadOperationState;
 
-typedef void (^DFDownloadCompletionHandler)(NSString *response, NSHTTPURLResponse *urlResponse, NSError *error);
+typedef void (^DFDownloadCompletionHandler)(NSData *response, NSHTTPURLResponse *urlResponse, NSError *error);
 
 
 @interface DFDownloadOperation : NSOperation <NSURLConnectionDelegate, NSURLConnectionDataDelegate>
