@@ -29,3 +29,5 @@ xcuserdata
 *.ipa
 Pods/
 
+.idea
+.DS_Store
