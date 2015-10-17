@@ -14,8 +14,10 @@
 		685072881BCE30460066B79C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 685072871BCE30460066B79C /* Images.xcassets */; };
 		6850728B1BCE30460066B79C /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 685072891BCE30460066B79C /* LaunchScreen.xib */; };
 		685072971BCE30460066B79C /* DafaWebCacheTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 685072961BCE30460066B79C /* DafaWebCacheTests.m */; };
+		E198850400B90C38829A7774 /* DFWebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E19881C208753D8F064FB151 /* DFWebCache.m */; };
 		E19885F5D9F489AC825BB424 /* TestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = E19885FC626D5F46A242B5BD /* TestOperation.m */; };
 		E1988B007DF3F0CE7A0116E8 /* DFDownloadOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = E1988116833239B05AA270D7 /* DFDownloadOperation.m */; };
+		E1988FFE3EA0FD0D7520F6A4 /* DFUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E1988C2D11DCB1052ECBBF45 /* DFUtils.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,8 +45,12 @@
 		685072951BCE30460066B79C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		685072961BCE30460066B79C /* DafaWebCacheTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DafaWebCacheTests.m; sourceTree = "<group>"; };
 		E1988116833239B05AA270D7 /* DFDownloadOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DFDownloadOperation.m; sourceTree = "<group>"; };
+		E19881C208753D8F064FB151 /* DFWebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DFWebCache.m; sourceTree = "<group>"; };
+		E19884E696F4E57B6F7A2328 /* DFWebCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DFWebCache.h; sourceTree = "<group>"; };
 		E19885FC626D5F46A242B5BD /* TestOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestOperation.m; sourceTree = "<group>"; };
 		E1988B4DE53A6ED590B5A7D7 /* DFDownloadOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DFDownloadOperation.h; sourceTree = "<group>"; };
+		E1988C2D11DCB1052ECBBF45 /* DFUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DFUtils.m; sourceTree = "<group>"; };
+		E1988E103F4ABD6760B0CB5E /* DFUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DFUtils.h; sourceTree = "<group>"; };
 		E1988F2C50702C8A765CA974 /* TestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestOperation.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -99,6 +105,10 @@
 				E1988B4DE53A6ED590B5A7D7 /* DFDownloadOperation.h */,
 				E19885FC626D5F46A242B5BD /* TestOperation.m */,
 				E1988F2C50702C8A765CA974 /* TestOperation.h */,
+				E1988C2D11DCB1052ECBBF45 /* DFUtils.m */,
+				E1988E103F4ABD6760B0CB5E /* DFUtils.h */,
+				E19881C208753D8F064FB151 /* DFWebCache.m */,
+				E19884E696F4E57B6F7A2328 /* DFWebCache.h */,
 			);
 			path = DafaWebCache;
 			sourceTree = "<group>";
@@ -234,6 +244,8 @@
 				6850727D1BCE30460066B79C /* main.m in Sources */,
 				E1988B007DF3F0CE7A0116E8 /* DFDownloadOperation.m in Sources */,
 				E19885F5D9F489AC825BB424 /* TestOperation.m in Sources */,
+				E1988FFE3EA0FD0D7520F6A4 /* DFUtils.m in Sources */,
+				E198850400B90C38829A7774 /* DFWebCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

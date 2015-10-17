@@ -18,7 +18,6 @@
 @property (nonatomic, strong) NSMutableData *operationData;
 @property (nonatomic, strong) NSTimer *timeoutTimer;
 @property (nonatomic) NSTimeInterval timeoutInterval;
-@property (nonatomic, strong) NSURLConnection *operationConnection;
 @property (nonatomic) long long int expectedContentLength;
 @property (nonatomic) int receivedContentLength;
 @property (nonatomic, strong) NSHTTPURLResponse *operationURLResponse;
@@ -89,24 +88,21 @@
     [self.operationRequest setTimeoutInterval:self.timeoutInterval];
   }
 
-  self.operationConnection = [[NSURLConnection alloc] initWithRequest:self.operationRequest
-                                                             delegate:self
-                                                     startImmediately:NO];
-
-  //NSOperationQueue *currentQueue = [NSOperationQueue currentQueue];
-  //BOOL inBackgroundAndInOperationQueue = (currentQueue != nil && currentQueue != [NSOperationQueue mainQueue]);
-  //NSRunLoop *targetRunLoop = (inBackgroundAndInOperationQueue) ? [NSRunLoop currentRunLoop] : [NSRunLoop mainRunLoop];
-
-//  if(self.savePath) // schedule on main run loop so scrolling doesn't prevent UI updates of the progress block
-//    [self.operationConnection scheduleInRunLoop:targetRunLoop forMode:NSRunLoopCommonModes];
-//  else
-//    [self.operationConnection scheduleInRunLoop:targetRunLoop forMode:NSDefaultRunLoopMode];
+  NSURLSession *session = [NSURLSession sharedSession];
+  NSURLSessionDataTask *task = [session dataTaskWithRequest:self.operationRequest
+                                          completionHandler:
+                                                  ^(NSData *data, NSURLResponse *response, NSError *error) {
+                                                    if(self.operationCompletionBlock)
+                                                    {
+                                                      self.operationCompletionBlock(data, response, error);
+                                                    }
+                                                    [self finish];
+                                                  }];
   [self willChangeValueForKey:@"isExecuting"];
-  [self.operationConnection start];
+  [task resume];
   executing = YES;
-  [self didChangeValueForKey:@"isExecuting"];
-
   self.state = DFDownloadOperationStateExecuting;
+  [self didChangeValueForKey:@"isExecuting"];
 }
 
 - (NSTimeInterval)timeoutInterval {
@@ -129,67 +125,7 @@
 
 #pragma mark - NSURLConnectionDelegate
 
-- (void)connection:(NSURLConnection *)connection
-  didFailWithError:(NSError *)error
-{
-  [self callCompletionBlockWithResponse:nil error:error];
-}
-
-- (void)connection:(NSURLConnection *)connection
-didReceiveResponse:(NSURLResponse *)response
-{
-  self.expectedContentLength = response.expectedContentLength;
-  self.receivedContentLength = 0;
-  self.operationURLResponse = (NSHTTPURLResponse*)response;
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
-{
-  dispatch_group_async(self.saveDataDispatchGroup, self.saveDataDispatchQueue, ^{
-    if(self.savePath) {
-      @try { //writeData: can throw exception when there's no disk space. Give an error, don't crash
-        [self.operationFileHandle writeData:data];
-      }
-      @catch (NSException *exception) {
-        [self.operationConnection cancel];
-        NSError *writeError = [NSError errorWithDomain:@"DFDownloadOperation error"
-                                                  code:0
-                                              userInfo:exception.userInfo];
-        [self callCompletionBlockWithResponse:nil error:writeError];
-      }
-    }
-    else
-      [self.operationData appendData:data];
-  });
-}
-
-- (void)callCompletionBlockWithResponse:(id)response
-                                  error:(NSError *)error
-{
-  if(self.operationCompletionBlock && !self.isCancelled)
-  {
-    NSData *responseData = response;
-    NSString *responseString = [[NSString alloc] initWithData:responseData
-                                                     encoding:NSUTF8StringEncoding];
-    self.operationCompletionBlock(responseString, self.operationURLResponse, error);
-  }
-
-  [self finish];
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection
-{
-  dispatch_group_notify(self.saveDataDispatchGroup, self.saveDataDispatchQueue, ^{
-    id response = [NSData dataWithData:self.operationData];
-    NSError *error = nil;
-    [self callCompletionBlockWithResponse:response error:error];
-  });
-}
-
 - (void)finish {
-  [self.operationConnection cancel];
-  self.operationConnection = nil;
-
   self.state = DFDownloadOperationStateFinished;
 
   [self willChangeValueForKey:@"isFinished"];

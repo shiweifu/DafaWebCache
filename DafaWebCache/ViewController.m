@@ -9,6 +9,8 @@
 #import "ViewController.h"
 #import "DFDownloadOperation.h"
 #import "TestOperation.h"
+#import "DFUtils.h"
+#import "DFWebCache.h"
 
 @interface ViewController ()
 
@@ -21,22 +23,40 @@
 @implementation ViewController
 
 - (IBAction)onCacheURL:(id)sender {
+
+  DFWebCache *webCache = [[DFWebCache alloc] init];
+  [webCache cacheStringURL:@""
+                 imgPrefix:@""
+                 cssPrefix:@""
+                  jsPrefix:@""];
+
+  return;
+
   NSString *url = @"http://segmentfault.com/a/1190000003862596";
   DFDownloadOperation *operation = [[DFDownloadOperation alloc] initWithAddress:url
                                                                      saveToPath:nil
-                                                                     completion:^(NSString *response, NSHTTPURLResponse *urlResponse, NSError *error)
+                                                                     completion:^(id response, NSHTTPURLResponse *urlResponse, NSError *error)
           {
             NSLog(@"%@", response);
           }];
-//  [self.queue addOperation:operation];
-
-  TestOperation *to = [[TestOperation alloc] init];
-  [to setCompletionBlock:^
+  [operation setCompletionBlock:^
   {
     NSLog(@"run operation finish");
   }];
-  [self.queue addOperation:to];
 
+  NSString *documentPath = [DFUtils documentPath];
+
+
+  [self.queue addOperation:operation];
+
+//  TestOperation *to = [[TestOperation alloc] init];
+//  __block TestOperation *bto = to;
+//  [to setCompletionBlock:^
+//  {
+//    NSLog(@"%d", bto.isFinished);
+//    NSLog(@"run operation finish");
+//  }];
+//  [self.queue addOperation:to];
 }
 
 - (NSOperationQueue *)queue

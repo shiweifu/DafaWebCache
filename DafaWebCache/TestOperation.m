@@ -13,16 +13,37 @@
 
 @implementation TestOperation
 {
-
+  BOOL executing;
+  BOOL finished;
 }
 
-- (void)main
+- (instancetype)init
 {
+  self = [super init];
+  finished  = NO;
+  executing = NO;
+
+  return self;
+}
+
+
+- (void)start
+{
+  [super start];
   NSLog(@"%@", @"start operation");
 
-  self.connection = [[NSURLConnection alloc] initWithRequest:self.request
-                                                    delegate:self];
-  [self.connection start];
+  NSURLSession *session = [NSURLSession sharedSession];
+  NSURLSessionDataTask *task = [session dataTaskWithRequest:self.request
+                                          completionHandler:
+                                                  ^(NSData *data, NSURLResponse *response, NSError *error) {
+                                                    [self willChangeValueForKey:@"isFinished"];
+                                                    finished = YES;
+                                                    [self didChangeValueForKey:@"isFinished"];
+                                                  }];
+  [self willChangeValueForKey:@"isExecuting"];
+  [task resume];
+  executing = YES;
+  [self didChangeValueForKey:@"isExecuting"];
 }
 
 -(NSMutableURLRequest *)request
@@ -57,6 +78,16 @@ didReceiveResponse:(NSURLResponse *)response
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
 
+}
+
+- (BOOL)isExecuting
+{
+  return executing;
+}
+
+- (BOOL)isFinished
+{
+  return finished;
 }
 
 @end
