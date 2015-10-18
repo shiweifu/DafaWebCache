@@ -6,7 +6,11 @@
 #import <Foundation/Foundation.h>
 
 
-static NSString * const DFCachePrefix = @"com.dollop.dafawebcache";
+static NSString * const DFCachePrefix  = @"com.dollop.dafawebcache";
+static NSString * const DFDatabaseName = @"dafawebcache.db";
+
+static NSString * const kURLCacheSuccessNotification = @"DFCacheUrlCacheSuccessNotification";
+static NSString * const kURLCacheFailureNotification = @"DFCacheUrlCacheFailureNotification";
 
 @interface DFWebCacheResult : NSObject
 
@@ -17,12 +21,14 @@ static NSString * const DFCachePrefix = @"com.dollop.dafawebcache";
 
 @interface DFWebCache : NSObject
 
-// 缓存URL.如果不需要递归,则只下载当前url.否则下载页面中所有的css/js/img
-- (void)cacheStringURL:(NSString *)string
+// 缓存URL。如果不需要递归，则只下载当前url。否则下载页面中所有的css/js/img并缓存。
+// 如果该URL已经被缓存，则返回NO，如果下载队列被添加，则返回YES
+- (BOOL)cacheStringURL:(NSString *)string
              recursion:(BOOL)isRescursion
-             imgPrefix:(NSString *)prefix
-             cssPrefix:(NSString *)prefix1
-              jsPrefix:(NSString *)prefix2;
+                 force:(BOOL)isForce
+             imgPrefix:(NSString *)imgPrefix
+             cssPrefix:(NSString *)cssPrefix
+              jsPrefix:(NSString *)jsPrefix;
 
 // 所有已经缓存的URL列表
 - (NSArray *)cachedURLList;
@@ -30,4 +36,5 @@ static NSString * const DFCachePrefix = @"com.dollop.dafawebcache";
 // 返回已经缓存的url
 - (DFWebCacheResult *)getCachedURL:(NSString *)url;
 
+- (void)insertData:(NSData *)data url:(NSURL *)url;
 @end

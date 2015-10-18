@@ -22,13 +22,36 @@
 
 @implementation ViewController
 
+- (void)viewDidLoad
+{
+  [super viewDidLoad];
+  [[NSNotificationCenter defaultCenter] addObserver:self
+                                           selector:@selector(cacheSuccess:)
+                                               name:kURLCacheSuccessNotification
+                                             object:nil];
+}
+
+- (void)cacheSuccess:(NSNotification *)noti
+{
+  NSLog(@"%@", noti);
+}
+
+-(void)dealloc
+{
+  [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                  name:kURLCacheSuccessNotification
+                                                object:nil];
+}
+
 - (IBAction)onCacheURL:(id)sender {
 
   DFWebCache *webCache = [[DFWebCache alloc] init];
-  [webCache cacheStringURL:@""
-                 imgPrefix:@""
-                 cssPrefix:@""
-                  jsPrefix:@""];
+  [webCache cacheStringURL:@"http://segmentfault.com/a/1190000003862596"
+                 recursion:NO
+                     force:NO
+                 imgPrefix:@"http://segmentfault.com"
+                 cssPrefix:@"http://segmentfault.com"
+                  jsPrefix:@"http://segmentfault.com"];
 
   return;
 

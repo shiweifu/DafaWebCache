@@ -94,7 +94,9 @@
                                                   ^(NSData *data, NSURLResponse *response, NSError *error) {
                                                     if(self.operationCompletionBlock)
                                                     {
-                                                      self.operationCompletionBlock(data, response, error);
+                                                      dispatch_sync(dispatch_get_main_queue(), ^{
+                                                        self.operationCompletionBlock(data, response, error);
+                                                      });
                                                     }
                                                     [self finish];
                                                   }];
