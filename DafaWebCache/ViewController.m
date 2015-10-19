@@ -16,6 +16,7 @@
 
 @property(nonatomic, strong) NSLock *lock;
 @property(assign, atomic) NSUInteger num;
+@property (weak, nonatomic) IBOutlet UIWebView *webView;
 
 @property (nonatomic, strong) NSOperationQueue *queue;
 @end
@@ -43,15 +44,30 @@
                                                 object:nil];
 }
 
+
 - (IBAction)onCacheURL:(id)sender {
 
-  DFWebCache *webCache = [[DFWebCache alloc] init];
-  [webCache cacheStringURL:@"http://segmentfault.com/a/1190000003862596"
-                 recursion:NO
-                     force:NO
-                 imgPrefix:@"http://segmentfault.com"
-                 cssPrefix:@"http://segmentfault.com"
-                  jsPrefix:@"http://segmentfault.com"];
+  DFWebCache *webCache = [DFWebCache instance];
+  [webCache cacheStringURL:@"http://hi-pda.com/"
+                 recursion:YES
+                     force:YES
+                 imgPrefix:@"http://hi-pda.com"
+                 cssPrefix:@"http://hi-pda.com"
+                  jsPrefix:@"http://hi-pda.com"];
+
+
+//  [webCache cacheStringURL:@"http://v2ex.com"
+//                 recursion:YES
+//                     force:YES
+//                 imgPrefix:@"http://v2ex.com"
+//                 cssPrefix:@""
+//                  jsPrefix:@""];
+
+//  DFWebCacheResult *result = [webCache getCachedURL:@"http://segmentfault.com/a/1190000003862596"];
+//  NSLog(@"%@", result);
+
+//  [self.webView loadHTMLString:result.contentHTML
+//                       baseURL:result.path];
 
   return;
 
@@ -92,6 +108,10 @@
 }
 
 - (IBAction)loadFromCache:(id)sender {
+  DFWebCache *webCache     = [DFWebCache instance];
+  DFWebCacheResult *result = [webCache getCachedURL:@"http://hi-pda.com/"];
+  [self.webView loadHTMLString:result.contentHTML
+                       baseURL:result.path];
 }
 
 @end

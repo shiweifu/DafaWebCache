@@ -21,6 +21,9 @@ static NSString * const kURLCacheFailureNotification = @"DFCacheUrlCacheFailureN
 
 @interface DFWebCache : NSObject
 
+//单例模式
++ (DFWebCache *)instance;
+
 // 缓存URL。如果不需要递归，则只下载当前url。否则下载页面中所有的css/js/img并缓存。
 // 如果该URL已经被缓存，则返回NO，如果下载队列被添加，则返回YES
 - (BOOL)cacheStringURL:(NSString *)string
@@ -31,10 +34,9 @@ static NSString * const kURLCacheFailureNotification = @"DFCacheUrlCacheFailureN
               jsPrefix:(NSString *)jsPrefix;
 
 // 所有已经缓存的URL列表
-- (NSArray *)cachedURLList;
+- (NSArray *)cachedList;
 
 // 返回已经缓存的url
 - (DFWebCacheResult *)getCachedURL:(NSString *)url;
 
-- (void)insertData:(NSData *)data url:(NSURL *)url;
 @end

@@ -91,11 +91,11 @@
   NSURLSession *session = [NSURLSession sharedSession];
   NSURLSessionDataTask *task = [session dataTaskWithRequest:self.operationRequest
                                           completionHandler:
-                                                  ^(NSData *data, NSURLResponse *response, NSError *error) {
+                                                  ^(NSData *data, NSURLResponse *res, NSError *error) {
                                                     if(self.operationCompletionBlock)
                                                     {
                                                       dispatch_sync(dispatch_get_main_queue(), ^{
-                                                        self.operationCompletionBlock(data, response, error);
+                                                        self.operationCompletionBlock(data, res, error);
                                                       });
                                                     }
                                                     [self finish];
