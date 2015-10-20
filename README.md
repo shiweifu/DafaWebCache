@@ -35,6 +35,6 @@ http://shiweifu.lofter.com/post/8293b_854ca22
 
 # 联系方式
 
- 支付宝：shiweifu@gmail.com
- wechat：kernel32
+ - 支付宝：shiweifu@gmail.com  
+ - wechat：kernel32
 
