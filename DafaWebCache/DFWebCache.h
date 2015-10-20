@@ -34,6 +34,14 @@ static NSString * const kURLCacheFailureNotification = @"DFCacheUrlCacheFailureN
              imgPrefix:(NSString *)imgPrefix
              cssPrefix:(NSString *)cssPrefix;
 
+// 缓存页面
+- (BOOL)cacheHTMLPage:(NSString *)htmlPage
+            uniqueURL:(NSString *)url
+            recursion:(BOOL)isRescursion
+                force:(BOOL)isForce
+            imgPrefix:(NSString *)imgPrefix
+            cssPrefix:(NSString *)cssPrefix;
+
 // 所有已经缓存的URL列表
 - (NSArray *)cachedList;
 

@@ -81,11 +81,12 @@
   return NO;
 }
 
-- (BOOL)cacheStringURL:(NSString *)url
-             recursion:(BOOL)isRescursion
-                 force:(BOOL)isForce
-             imgPrefix:(NSString *)imgPrefix
-             cssPrefix:(NSString *)cssPrefix;
+- (BOOL)cacheHTMLPage:(NSString *)htmlPage
+            uniqueURL:(NSString *)url
+            recursion:(BOOL)isRescursion
+                force:(BOOL)isForce
+            imgPrefix:(NSString *)imgPrefix
+            cssPrefix:(NSString *)cssPrefix;
 {
   __block DFWebCache   *weakSelf  = self;
   if(isForce)
@@ -98,20 +99,20 @@
   }
 
   DFDownloadCompletionHandler noRescursionBlock = ^(NSData *response, NSHTTPURLResponse *urlResponse, NSError *error)
-                                                                     {
-                                                                       [weakSelf insertData:response
-                                                                                     forUrl:urlResponse.URL.absoluteString
-                                                                               orignalPath:nil
-                                                                                        url:urlResponse.URL];
-                                                                       if(!response || error)
-                                                                       {
-                                                                         [[NSNotificationCenter defaultCenter] postNotificationName:kURLCacheFailureNotification
-                                                                                                                             object:urlResponse.URL];
-                                                                         return;
-                                                                       }
-                                                                       [[NSNotificationCenter defaultCenter] postNotificationName:kURLCacheSuccessNotification
-                                                                                                                           object:urlResponse.URL];
-                                                                     };
+  {
+    [weakSelf insertData:response
+                  forUrl:urlResponse.URL.absoluteString
+             orignalPath:nil
+                     url:urlResponse.URL];
+    if(!response || error)
+    {
+      [[NSNotificationCenter defaultCenter] postNotificationName:kURLCacheFailureNotification
+                                                          object:urlResponse.URL];
+      return;
+    }
+    [[NSNotificationCenter defaultCenter] postNotificationName:kURLCacheSuccessNotification
+                                                        object:urlResponse.URL];
+  };
 
 
   DFDownloadCompletionHandler rescursionBlock = ^(NSData *response, NSHTTPURLResponse *urlResponse, NSError *error)
@@ -149,21 +150,55 @@
     [weakSelf.dafaQueue addOperation:notiOp];
   };
 
-  DFDownloadOperation *operation = nil;
+  NSData *data = [htmlPage dataUsingEncoding:NSUTF8StringEncoding];
+  NSHTTPURLResponse *httpUrlResponse = [[NSHTTPURLResponse alloc] initWithURL:[[NSURL alloc] initWithString:url]
+                                                                   statusCode:200
+                                                                  HTTPVersion:@"1.1"
+                                                                 headerFields:@{}];
 
   if(isRescursion)
   {
-    operation = [[DFDownloadOperation alloc] initWithAddress:url
-                                                  saveToPath:nil
-                                                  completion:rescursionBlock];
+    rescursionBlock(data, httpUrlResponse, nil);
   }
   else
   {
-    operation = [[DFDownloadOperation alloc] initWithAddress:url
-                                                  saveToPath:nil
-                                                  completion:noRescursionBlock];
+    noRescursionBlock(data, httpUrlResponse, nil);
   }
 
+  return YES;
+
+}
+
+- (BOOL)cacheStringURL:(NSString *)url
+             recursion:(BOOL)isRescursion
+                 force:(BOOL)isForce
+             imgPrefix:(NSString *)imgPrefix
+             cssPrefix:(NSString *)cssPrefix;
+{
+  __block DFWebCache   *weakSelf  = self;
+  if(isForce)
+  {
+    [self deleteRowWithURL:url];
+  }
+  else if([self isCached:url])
+  {
+    return NO;
+  }
+
+  DFDownloadCompletionHandler block = ^(NSData *response, NSHTTPURLResponse *urlResponse, NSError *error)
+                                                                     {
+                                                                       [weakSelf cacheHTMLPage:[weakSelf stringWithData:response
+                                                                                                           encodingName:weakSelf.encodingName]
+                                                                                     uniqueURL:urlResponse.URL.absoluteString
+                                                                                     recursion:isRescursion
+                                                                                         force:isForce
+                                                                                     imgPrefix:imgPrefix
+                                                                                     cssPrefix:cssPrefix];
+                                                                     };
+
+  DFDownloadOperation *operation = [[DFDownloadOperation alloc] initWithAddress:url
+                                                saveToPath:nil
+                                                completion:block];
   [self.dafaQueue addOperation:operation];
   return YES;
 }
@@ -199,7 +234,7 @@
   {
     NSRange r = [t rangeAtIndex:1];
     NSString *tmpPath = [htmlString substringWithRange:r];
-    NSString *tmpURL = @"";
+    NSString *tmpURL  = tmpPath;
 
     //拼接字符串成为一个完整的URL
     if([tmpPath hasPrefix:@"//"])
@@ -425,7 +460,6 @@
 
   return [[NSString alloc] initWithData:data encoding:encoding];
 }
-
 
 @end
 

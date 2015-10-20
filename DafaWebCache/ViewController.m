@@ -49,12 +49,26 @@
 
   DFWebCache *webCache = [DFWebCache instance];
 //  [webCache setEncodingName:@"GBK"];
-  [webCache cacheStringURL:@"http://www.v2ex.com/"
+
+  [webCache cacheStringURL:@"http://post.smzdm.com/p/354324/"
                  recursion:YES
                      force:YES
-                 imgPrefix:@"http://www.v2ex.com"
-                 cssPrefix:@"http://www.v2ex.com"];
+                 imgPrefix:@"http://www.smzdm.com"
+                 cssPrefix:@"http://www.smzdm.com"];
 
+//  NSURL *url = [[NSURL alloc] initWithString:@"http://wap.fanfou.com/home"];
+//  NSString *page = [NSString stringWithContentsOfURL:url
+//                                            encoding:NSUTF8StringEncoding
+//                                               error:nil];
+//
+//
+//
+//  [webCache cacheHTMLPage:page
+//                uniqueURL:@"home_of_fanfou"
+//                recursion:YES
+//                    force:YES
+//                imgPrefix:@"http://m.fanfou.com"
+//                cssPrefix:@"http://m.fanfou.com"];
 
   return;
 }
@@ -70,7 +84,7 @@
 
 - (IBAction)loadFromCache:(id)sender {
   DFWebCache *webCache     = [DFWebCache instance];
-  DFWebCacheResult *result = [webCache getCachedURL:@"http://www.v2ex.com/"];
+  DFWebCacheResult *result = [webCache getCachedURL:@"http://post.smzdm.com/p/354324/"];
   [self.webView loadHTMLString:result.contentHTML
                        baseURL:result.path];
 }

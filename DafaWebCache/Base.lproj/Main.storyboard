@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="vXZ-lx-hvc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="vXZ-lx-hvc">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--View Controller-->
@@ -14,11 +13,11 @@
                         <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jPu-q2-2bK">
-                                <rect key="frame" x="200" y="550" width="60" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jPu-q2-2bK">
+                                <rect key="frame" x="130" y="488" width="60" height="30"/>
                                 <state key="normal" title="缓存URL">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -26,13 +25,8 @@
                                     <action selector="onCacheURL:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="t2s-6d-Nwe"/>
                                 </connections>
                             </button>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="http://segmentfault.com/a/1190000003852910" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="a2i-4h-u2a">
-                                <rect key="frame" x="200" y="503" width="200" height="30"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LqV-zf-6Xp">
-                                <rect key="frame" x="325" y="550" width="75" height="30"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LqV-zf-6Xp">
+                                <rect key="frame" x="123" y="526" width="75" height="30"/>
                                 <state key="normal" title="从缓存加载">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -41,18 +35,20 @@
                                 </connections>
                             </button>
                             <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cXS-ns-wS6">
-                                <rect key="frame" x="0.0" y="0.0" width="600" height="480"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="480" id="1y1-S0-mJI"/>
-                                </constraints>
                             </webView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="cXS-ns-wS6" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leadingMargin" constant="-16" id="Upl-WR-nQd"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="cXS-ns-wS6" secondAttribute="trailing" constant="-16" id="hpM-rL-Fxr"/>
-                            <constraint firstItem="cXS-ns-wS6" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="topMargin" id="zGO-X0-Mnf"/>
+                            <constraint firstItem="2fi-mo-0CV" firstAttribute="top" secondItem="LqV-zf-6Xp" secondAttribute="bottom" constant="12" id="3Zs-tx-eF5"/>
+                            <constraint firstItem="LqV-zf-6Xp" firstAttribute="top" secondItem="jPu-q2-2bK" secondAttribute="bottom" constant="8" symbolic="YES" id="8qX-jX-I5h"/>
+                            <constraint firstItem="jPu-q2-2bK" firstAttribute="top" secondItem="cXS-ns-wS6" secondAttribute="bottom" constant="8" symbolic="YES" id="CtE-aF-iN1"/>
+                            <constraint firstItem="jPu-q2-2bK" firstAttribute="centerX" secondItem="LqV-zf-6Xp" secondAttribute="centerX" id="PCY-Zs-f3z"/>
+                            <constraint firstItem="jPu-q2-2bK" firstAttribute="centerX" secondItem="cXS-ns-wS6" secondAttribute="centerX" id="SyL-DK-4zs"/>
+                            <constraint firstItem="cXS-ns-wS6" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="XkO-2X-Kv6"/>
+                            <constraint firstItem="cXS-ns-wS6" firstAttribute="top" secondItem="kh9-bI-dsS" secondAttribute="top" id="acQ-i7-jmP"/>
+                            <constraint firstAttribute="trailing" secondItem="cXS-ns-wS6" secondAttribute="trailing" id="lcQ-tv-xp4"/>
                         </constraints>
                     </view>
                     <connections>
@@ -61,6 +57,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="79.466666666666669" y="498.89333333333332"/>
         </scene>
     </scenes>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
 </document>
