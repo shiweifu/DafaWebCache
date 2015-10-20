@@ -21,6 +21,8 @@ static NSString * const kURLCacheFailureNotification = @"DFCacheUrlCacheFailureN
 
 @interface DFWebCache : NSObject
 
+@property (nonatomic, copy) NSString *encodingName;
+
 //单例模式
 + (DFWebCache *)instance;
 

@@ -128,8 +128,10 @@
       return;
     }
 
-    NSString *htmlString = [[NSString alloc] initWithData:response
-                                                 encoding:NSUTF8StringEncoding];
+
+    NSString *htmlString = [weakSelf stringWithData:response
+                                       encodingName:self.encodingName];
+
     NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<img[^<^{^(]+src=['\"]{0,1}([^>^\\s^\"]*)['\"]{0,1}[^>]*>"
                                                                            options:nil
                                                                              error:nil];
@@ -303,7 +305,9 @@
   }
   else
   {
-    contentHTML = [rs stringForColumnIndex:0];
+    NSData *data = [rs dataForColumnIndex:0];
+    contentHTML = [self stringWithData:data
+                          encodingName:self.encodingName];
   }
 
   [rs close];
@@ -355,6 +359,30 @@
   [db open];
   return db;
 }
+
+#pragma mark - Utils
+
+
+- (NSString *)stringWithData:(NSData *)data
+                encodingName:(NSString *)encodingName {
+  if(data == nil) return nil;
+
+  NSStringEncoding encoding = NSUTF8StringEncoding;
+
+  /* try to use encoding declared in HTTP response headers */
+
+  if(encodingName != nil) {
+
+    encoding = CFStringConvertEncodingToNSStringEncoding(CFStringConvertIANACharSetNameToEncoding((__bridge CFStringRef)encodingName));
+
+    if(encoding == kCFStringEncodingInvalidId) {
+      encoding = NSUTF8StringEncoding; // by default
+    }
+  }
+
+  return [[NSString alloc] initWithData:data encoding:encoding];
+}
+
 
 @end
 

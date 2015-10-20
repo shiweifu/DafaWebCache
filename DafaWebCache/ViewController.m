@@ -48,6 +48,7 @@
 - (IBAction)onCacheURL:(id)sender {
 
   DFWebCache *webCache = [DFWebCache instance];
+  [webCache setEncodingName:@"GBK"];
   [webCache cacheStringURL:@"http://hi-pda.com/"
                  recursion:YES
                      force:YES
@@ -109,7 +110,8 @@
 
 - (IBAction)loadFromCache:(id)sender {
   DFWebCache *webCache     = [DFWebCache instance];
-  DFWebCacheResult *result = [webCache getCachedURL:@"http://hi-pda.com/"];
+  [webCache setEncodingName:@"GBK"];
+  DFWebCacheResult *result = [webCache getCachedURL:@"http://www.hi-pda.com/forum/"];
   [self.webView loadHTMLString:result.contentHTML
                        baseURL:result.path];
 }
