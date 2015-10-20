@@ -32,8 +32,7 @@ static NSString * const kURLCacheFailureNotification = @"DFCacheUrlCacheFailureN
              recursion:(BOOL)isRescursion
                  force:(BOOL)isForce
              imgPrefix:(NSString *)imgPrefix
-             cssPrefix:(NSString *)cssPrefix
-              jsPrefix:(NSString *)jsPrefix;
+             cssPrefix:(NSString *)cssPrefix;
 
 // 所有已经缓存的URL列表
 - (NSArray *)cachedList;

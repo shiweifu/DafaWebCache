@@ -48,55 +48,15 @@
 - (IBAction)onCacheURL:(id)sender {
 
   DFWebCache *webCache = [DFWebCache instance];
-  [webCache setEncodingName:@"GBK"];
-  [webCache cacheStringURL:@"http://hi-pda.com/"
+//  [webCache setEncodingName:@"GBK"];
+  [webCache cacheStringURL:@"http://www.v2ex.com/"
                  recursion:YES
                      force:YES
-                 imgPrefix:@"http://hi-pda.com"
-                 cssPrefix:@"http://hi-pda.com"
-                  jsPrefix:@"http://hi-pda.com"];
+                 imgPrefix:@"http://www.v2ex.com"
+                 cssPrefix:@"http://www.v2ex.com"];
 
-
-//  [webCache cacheStringURL:@"http://v2ex.com"
-//                 recursion:YES
-//                     force:YES
-//                 imgPrefix:@"http://v2ex.com"
-//                 cssPrefix:@""
-//                  jsPrefix:@""];
-
-//  DFWebCacheResult *result = [webCache getCachedURL:@"http://segmentfault.com/a/1190000003862596"];
-//  NSLog(@"%@", result);
-
-//  [self.webView loadHTMLString:result.contentHTML
-//                       baseURL:result.path];
 
   return;
-
-  NSString *url = @"http://segmentfault.com/a/1190000003862596";
-  DFDownloadOperation *operation = [[DFDownloadOperation alloc] initWithAddress:url
-                                                                     saveToPath:nil
-                                                                     completion:^(id response, NSHTTPURLResponse *urlResponse, NSError *error)
-          {
-            NSLog(@"%@", response);
-          }];
-  [operation setCompletionBlock:^
-  {
-    NSLog(@"run operation finish");
-  }];
-
-  NSString *documentPath = [DFUtils documentPath];
-
-
-  [self.queue addOperation:operation];
-
-//  TestOperation *to = [[TestOperation alloc] init];
-//  __block TestOperation *bto = to;
-//  [to setCompletionBlock:^
-//  {
-//    NSLog(@"%d", bto.isFinished);
-//    NSLog(@"run operation finish");
-//  }];
-//  [self.queue addOperation:to];
 }
 
 - (NSOperationQueue *)queue
@@ -110,8 +70,7 @@
 
 - (IBAction)loadFromCache:(id)sender {
   DFWebCache *webCache     = [DFWebCache instance];
-  [webCache setEncodingName:@"GBK"];
-  DFWebCacheResult *result = [webCache getCachedURL:@"http://www.hi-pda.com/forum/"];
+  DFWebCacheResult *result = [webCache getCachedURL:@"http://www.v2ex.com/"];
   [self.webView loadHTMLString:result.contentHTML
                        baseURL:result.path];
 }

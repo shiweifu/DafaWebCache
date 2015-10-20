@@ -85,8 +85,7 @@
              recursion:(BOOL)isRescursion
                  force:(BOOL)isForce
              imgPrefix:(NSString *)imgPrefix
-             cssPrefix:(NSString *)cssPrefix
-              jsPrefix:(NSString *)jsPrefix;
+             cssPrefix:(NSString *)cssPrefix;
 {
   __block DFWebCache   *weakSelf  = self;
   if(isForce)
@@ -128,65 +127,25 @@
       return;
     }
 
-
-    NSString *htmlString = [weakSelf stringWithData:response
-                                       encodingName:self.encodingName];
-
-    NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"<img[^<^{^(]+src=['\"]{0,1}([^>^\\s^\"]*)['\"]{0,1}[^>]*>"
-                                                                           options:nil
-                                                                             error:nil];
-    NSArray *imageURLs = [regex matchesInString:htmlString
-                                        options:0
-                                          range:NSMakeRange(0, htmlString.length)];
-
-
     NSBlockOperation *notiOp = [NSBlockOperation blockOperationWithBlock:^
     {
       [[NSNotificationCenter defaultCenter] postNotificationName:kURLCacheSuccessNotification
                                                           object:urlResponse.URL];
     }];
 
-    for(NSTextCheckingResult *t in imageURLs)
-    {
-      NSRange r = [t rangeAtIndex:1];
-      NSString *imagePath = [htmlString substringWithRange:r];
-      NSString *imgURL = @"";
+    NSString *htmlString = [weakSelf stringWithData:response
+                                       encodingName:self.encodingName];
 
-      //拼接字符串成为一个完整的URL
-      if([imagePath hasPrefix:@"//"])
-      {
-        imgURL = [NSString stringWithFormat:@"http:%@", imagePath];
-      }
-      else if ([imagePath hasPrefix:@"/"])
-      {
-        imgURL = [NSString stringWithFormat:@"%@%@", imgPrefix, imagePath];
-      }
+    [weakSelf processImages:htmlString
+                     forUrl:urlResponse.URL.absoluteString
+                     prefix:imgPrefix
+                 dependency:notiOp];
 
-      NSLog(@"%@", imgURL);
+    [weakSelf processCss:htmlString
+                  forUrl:urlResponse.URL.absoluteString
+                  prefix:cssPrefix
+              dependency:notiOp];
 
-      if([imgURL isEqualToString:@""])
-      {
-        continue;
-      }
-
-      __block NSString *blockImagePath = imagePath;
-
-      // 建立一个队列，发出请求
-      DFDownloadOperation *imgOP = [[DFDownloadOperation alloc] initWithAddress:imgURL
-                                                                     saveToPath:nil
-                                                                     completion:^(NSData *imgData, NSHTTPURLResponse *imgResponse, NSError *imgErr)
-                                                                     {
-                                                                       if(imgData || !imgErr )
-                                                                       {
-                                                                         [weakSelf insertData:imgData
-                                                                                       forUrl:urlResponse.URL.absoluteString
-                                                                                  orignalPath:blockImagePath
-                                                                                          url:imgResponse.URL];
-                                                                       }
-                                                                     }];
-      [notiOp addDependency:imgOP];
-      [weakSelf.dafaQueue addOperation:imgOP];
-    }
     [weakSelf.dafaQueue addOperation:notiOp];
   };
 
@@ -207,6 +166,90 @@
 
   [self.dafaQueue addOperation:operation];
   return YES;
+}
+
+- (void)processCss:(NSString *)htmlString
+            forUrl:(NSString *)forUrl
+            prefix:(NSString *)prefix
+        dependency:(NSOperation *)dependencyOp
+{
+  NSString *regex = @"<link[^>]+href=[\"']([^>]+\\.css)[^>]+>";
+  [self processPage:htmlString
+              regex:regex
+             forUrl:forUrl
+             prefix:prefix
+         dependency:dependencyOp];
+}
+
+- (void)processPage:(NSString *)htmlString
+              regex:(NSString *)regexString
+             forUrl:(NSString *)forUrl
+             prefix:(NSString *)prefix
+         dependency:(NSOperation *)dependencyOp
+{
+  __block DFWebCache   *weakSelf  = self;
+  NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:regexString
+                                                                         options:nil
+                                                                           error:nil];
+  NSArray *cssURLs = [regex matchesInString:htmlString
+                                    options:0
+                                      range:NSMakeRange(0, htmlString.length)];
+
+  for(NSTextCheckingResult *t in cssURLs)
+  {
+    NSRange r = [t rangeAtIndex:1];
+    NSString *tmpPath = [htmlString substringWithRange:r];
+    NSString *tmpURL = @"";
+
+    //拼接字符串成为一个完整的URL
+    if([tmpPath hasPrefix:@"//"])
+    {
+      tmpURL = [NSString stringWithFormat:@"http:%@", tmpPath];
+    }
+    else if ([tmpPath hasPrefix:@"/"] || ![tmpPath hasPrefix:@"http"])
+    {
+      tmpURL = [NSString stringWithFormat:@"%@%@", prefix, tmpPath];
+    }
+
+    NSLog(@"%@", tmpURL);
+
+    if([tmpURL isEqualToString:@""])
+    {
+      continue;
+    }
+
+    __block NSString *blockImagePath = tmpPath;
+
+    // 建立一个队列，发出请求
+    DFDownloadOperation *imgOP = [[DFDownloadOperation alloc] initWithAddress:tmpURL
+                                                                   saveToPath:nil
+                                                                   completion:^(NSData *imgData, NSHTTPURLResponse *imgResponse, NSError *imgErr)
+                                                                   {
+                                                                     if(imgData || !imgErr )
+                                                                     {
+                                                                       [weakSelf insertData:imgData
+                                                                                     forUrl:forUrl
+                                                                                orignalPath:blockImagePath
+                                                                                        url:imgResponse.URL];
+                                                                     }
+                                                                   }];
+    [dependencyOp addDependency:imgOP];
+    [weakSelf.dafaQueue addOperation:imgOP];
+  }
+}
+
+- (void)processImages:(NSString *)htmlString
+               forUrl:(NSString *)forUrl
+               prefix:(NSString *)prefix
+           dependency:(NSOperation *)dependencyOp
+{
+  NSString *regexString = @"<img[^<^{^(]+src=['\"]{0,1}([^>^\\s^\"]*)['\"]{0,1}[^>]*>";
+
+  [self processPage:htmlString
+              regex:regexString
+             forUrl:forUrl
+             prefix:prefix
+         dependency:dependencyOp];
 }
 
 - (void)deleteRowWithURL:(NSString *)url
